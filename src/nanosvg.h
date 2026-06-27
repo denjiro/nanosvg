@@ -363,6 +363,31 @@ int nsvg__parseXML(char* input,
 	return 1;
 }
 
+int nsvg__copyParseXML(const char* input,
+				   void (*startelCb)(void* ud, const char* el, const char** attr),
+				   void (*endelCb)(void* ud, const char* el),
+				   void (*contentCb)(void* ud, const char* s),
+				   void* ud)
+{
+	char* buf;
+	size_t len;
+	int ret;
+
+	if (input == NULL)
+		return 0;
+
+	len = strlen(input);
+	buf = (char*)malloc(len + 1);
+	if (buf == NULL)
+		return 0;
+
+	memcpy(buf, input, len + 1);
+	ret = nsvg__parseXML(buf, startelCb, endelCb, contentCb, ud);
+	free(buf);
+
+	return ret;
+}
+
 
 /* Simple SVG parser. */
 
